@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="referenceBean0" class="org.peregrino.persistence.impl.ReferenceImpl">
+	   <property name="category" value="2" />
+	   <property name="header" value="Hochhausbau" />
+	   <property name="description" value="Hochhausbau in München" />
+	</bean>
+
+	<bean id="referenceBean1" class="org.peregrino.persistence.impl.ReferenceImpl">
+	   <property name="category" value="2" />
+	   <property name="header" value="Hausbau" />
+	   <property name="description" value="Hausbau in München" />
+	</bean>
+
+	<bean id="referenceBean2" class="org.peregrino.persistence.impl.ReferenceImpl">
+	   <property name="category" value="4" />
+	   <property name="header" value="Brückenbau" />
+	   <property name="description" value="Brückenbau in Berlin" />
+	</bean>
+	
+	<!-- =========================================================================================== -->
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    	<property name="driverClassName" value="org.apache.derby.jdbc.ClientDriver" />
+    	<property name="url" value="jdbc:derby://localhost:1527/referenceDB" />
+    	<property name="username" value="me" />
+    	<property name="password" value="mine" />
+    </bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="referenceDAO" class="org.peregrino.persistence.impl.JdbcReferenceDAOImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+
+</beans>
+
