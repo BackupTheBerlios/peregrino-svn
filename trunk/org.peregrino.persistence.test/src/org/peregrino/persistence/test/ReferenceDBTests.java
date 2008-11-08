@@ -3,9 +3,11 @@
  */
 package org.peregrino.persistence.test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -35,6 +37,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  */
 public class ReferenceDBTests extends TestCase {
+
+	private static final int STRESS_NUMBER = 1000;
 
 	private static final String DATASET_MODIFIED_XML = "dataset/modified.xml";
 
@@ -226,7 +230,7 @@ public class ReferenceDBTests extends TestCase {
 		refDAO.dropTable();
 		refDAO.createTable();
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < STRESS_NUMBER; i++) {
 			Reference myRef = (Reference) ctx.getBean(REFERENCE_BEAN0);
 			myRef.setCategory(i);
 			myRef.setHeader("HEADER TEST\nCOOL...");
@@ -237,15 +241,30 @@ public class ReferenceDBTests extends TestCase {
 		// Fetch database data after executing your code
 		ITable actualTable = getConnection().createDataSet()
 				.getTable(TABLENAME);
-		assertEquals(10000, actualTable.getRowCount());
+		assertEquals(STRESS_NUMBER, actualTable.getRowCount());
 		IDataSet fullDataSet = getConnection().createDataSet();
 		FlatXmlDataSet.write(fullDataSet, new FileOutputStream(
 				"dataset/tenthousand.xml"));
 	}
 
+	/**
+	 * Exports the contents of the database into XML file.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void testXmlExport() {
+	public void testXmlExport() throws Exception {
+		final JdbcReferenceDAO refDAO = (JdbcReferenceDAO) ctx
+				.getBean(REFERENCE_DAO);
 
+		refDAO.dropTable();
+		refDAO.createTable();
+		refDAO.insertReference((Reference) ctx.getBean(REFERENCE_BEAN0));
+		refDAO.insertReference((Reference) ctx.getBean(REFERENCE_BEAN1));
+		refDAO.insertReference((Reference) ctx.getBean(REFERENCE_BEAN2));
+
+		OutputStream os = refDAO.exportXml();
+		assertNotNull(os.toString());
 	}
 
 	/**
