@@ -1,0 +1,20 @@
+This is the database schema:
+
+
+id integer
+category integer
+header varchar(100)
+description varchar(255)
+
+
+Category:
+Massivbau: 00001   [2]
+Stahlbetonbau: 00010  [4]
+Stahlbau: 00100 [8]
+Holzbau: 01000 [16]
+Wasserun: 10000 [32]
+
+connect 'jdbc:derby://localhost:1527/referenceDB;create=true;user=me;password=mine';
+
+create table refs(id integer, category integer, header varchar(100), description varchar(255));
+insert into refs values (1, 2, 'Neubau Haus München', 'Neubau Haus München 1975');
