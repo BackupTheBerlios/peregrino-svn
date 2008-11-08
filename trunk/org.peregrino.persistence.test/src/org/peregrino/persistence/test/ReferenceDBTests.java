@@ -5,6 +5,7 @@ package org.peregrino.persistence.test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -84,7 +85,6 @@ public class ReferenceDBTests extends TestCase {
 		}
 	}
 
-
 	private IDatabaseConnection getConnection() throws Exception {
 		return new DatabaseConnection(conn);
 	}
@@ -124,7 +124,7 @@ public class ReferenceDBTests extends TestCase {
 	public void testInsert() throws Exception {
 		final JdbcReferenceDAO refDAO = (JdbcReferenceDAO) ctx
 				.getBean(REFERENCE_DAO);
-		
+
 		refDAO.dropTable();
 		refDAO.createTable();
 		refDAO.insertReference((Reference) ctx.getBean(REFERENCE_BEAN0));
@@ -171,8 +171,7 @@ public class ReferenceDBTests extends TestCase {
 				.getTable(TABLENAME);
 
 		// Load expected data from an XML dataset
-		IDataSet expectedDataSet = new FlatXmlDataSet(new File(
-				DATASET_TWO_XML));
+		IDataSet expectedDataSet = new FlatXmlDataSet(new File(DATASET_TWO_XML));
 		ITable expectedTable = expectedDataSet.getTable(TABLENAME);
 		// dbUnit
 		Assertion.assertEquals(expectedTable, actualTable);
@@ -200,11 +199,11 @@ public class ReferenceDBTests extends TestCase {
 		ref1.setCategory(7);
 		ref1.setHeader("Strassenbau");
 		ref1.setDescription("Hausbau im Hundsrück");
-		
+
 		refDAO.modifyReference(ref1);
-		
+
 		lReferences = refDAO.getAllReferences();
-		
+
 		// Fetch database data after executing your code
 		ITable actualTable = getConnection().createDataSet()
 				.getTable(TABLENAME);
@@ -221,15 +220,34 @@ public class ReferenceDBTests extends TestCase {
 	// does some stress testing with 10,000 entries.
 	@Test
 	public void testStress() throws Exception {
+		final JdbcReferenceDAO refDAO = (JdbcReferenceDAO) ctx
+				.getBean(REFERENCE_DAO);
 
+		refDAO.dropTable();
+		refDAO.createTable();
+
+		for (int i = 0; i < 10000; i++) {
+			Reference myRef = (Reference) ctx.getBean(REFERENCE_BEAN0);
+			myRef.setCategory(i);
+			myRef.setHeader("HEADER TEST\nCOOL...");
+			myRef.setDescription("Description test...");
+			refDAO.insertReference(myRef);
+		}
+
+		// Fetch database data after executing your code
+		ITable actualTable = getConnection().createDataSet()
+				.getTable(TABLENAME);
+		assertEquals(10000, actualTable.getRowCount());
+		IDataSet fullDataSet = getConnection().createDataSet();
+		FlatXmlDataSet.write(fullDataSet, new FileOutputStream(
+				"dataset/tenthousand.xml"));
 	}
-	
+
 	@Test
 	public void testXmlExport() {
-		
+
 	}
 
-	
 	/**
 	 * tests that the jdbcReferenceDAO.getAllReferences() works.
 	 * 
