@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <REFS ID="1" CATEGORY="2" HEADER="Hochhausbau" DESCRIPTION="Hochhausbau in München"/>
+  <REFS ID="2" CATEGORY="7" HEADER="Strassenbau" DESCRIPTION="Hausbau im Hundsrück"/>
+  <REFS ID="3" CATEGORY="4" HEADER="Brückenbau" DESCRIPTION="Brückenbau in Berlin"/>
+</dataset>

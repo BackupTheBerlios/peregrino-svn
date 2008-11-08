@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--  Contains only two records, used for the delete testing method -->
+<dataset>
+  <REFS ID="1" CATEGORY="2" HEADER="Hochhausbau" DESCRIPTION="Hochhausbau in München"/>
+  <REFS ID="3" CATEGORY="4" HEADER="Brückenbau" DESCRIPTION="Brückenbau in Berlin"/>
+</dataset>
